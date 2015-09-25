@@ -15,10 +15,6 @@
 #include <ctime>
 #include <cctype>
 
-#ifdef _MSC_VER
-#pragma warning(disable:4355)
-#endif
-
 using namespace soci;
 using namespace soci::details;
 
@@ -144,7 +140,7 @@ void statement_impl::bind(values & values)
     }
 }
 
-void statement_impl::clean_up()
+void statement_impl::bind_clean_up()
 {
     // deallocate all bind and define objects
     std::size_t const isize = intos_.size();
@@ -178,6 +174,13 @@ void statement_impl::clean_up()
         indicators_[i] = NULL;
     }
 
+    row_ = NULL;
+    alreadyDescribed_ = false;
+}
+
+void statement_impl::clean_up()
+{
+    bind_clean_up();
     if (backEnd_ != NULL)
     {
         backEnd_->clean_up();
@@ -759,7 +762,7 @@ statement_impl::rethrow_current_exception_with_context(char const* operation)
                     // the query itself, as parsed by the backend.
                     std::string name = u.get_name();
                     if (name.empty())
-                        name = backEnd_->get_parameter_name(i);
+                        name = backEnd_->get_parameter_name(static_cast<int>(i));
 
                     oss << ":";
                     if (!name.empty())

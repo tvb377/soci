@@ -1,21 +1,10 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns='http://www.w3.org/1999/xhtml' xml:lang='en'>
-<head>
-  <meta content="text/html; charset=ISO-8859-1"  http-equiv="content-type" />
-  <link rel="stylesheet" type="text/css" href="../style.css" />
-  <title>SOCI - Existing Backends</title>
-</head>
+## Existing backends and supported platforms
 
-<body>
-<p class="banner">SOCI - The C++ Database Access Library</p>
+### Supported Features
 
-<h2>Existing backends and supported platforms</h2>
+(Follow the links to learn more about each backend.)
 
-<h4>Supported Features</h4>
-
-<p>(Follow the links to learn more about each backend.)</p>
-
-<table border="1" cellpadding="5" cellspacing="0">
+<table>
   <tbody>
     <tr>
       <th></th>
@@ -62,7 +51,7 @@
       <td>YES</td>
       <td>YES</td>
       <td><a href="mysql.html#transactions">YES</a>
-      	(with servers that support them, usually >=&nbsp;4.0)</td>
+        (with servers that support them, usually >=&nbsp;4.0)</td>
       <td>YES</td>
       <td><a href="firebird.html#transactions">YES</a></td>
       <td>YES</td>
@@ -110,17 +99,3 @@
     </tr>
   </tbody>
 </table>
-
-<table class="foot-links" border="0" cellpadding="2" cellspacing="2">
-  <tr>
-    <td class="foot-link-left">
-      <a href="../rationale.html">Previous (Rationale FAQ)</a>
-    </td>
-  </tr>
-</table>
-
-<p class="copyright">Copyright &copy; 2013 Mateusz Loskot</p>
-<p class="copyright">Copyright &copy; 2004-2008 Maciej Sobczak, Stephen Hutton</p>
-
-</body>
-</html>

@@ -29,6 +29,14 @@ source_group("Header Files" FILES ${SOCI_CORE_HEADERS})
 source_group("Source Files" FILES ${SOCI_CORE_SOURCES})
 source_group("CMake Files" FILES CMakeLists.txt)
 
+# Core targets configuration
+string(TOLOWER "${PROJECT_NAME}" PROJECTNAMEL)
+#this command will update parent scope variable
+set(SOCI_CORE_TARGET ${PROJECTNAMEL}_core PARENT_SCOPE)
+set(SOCI_CORE_TARGET ${PROJECTNAMEL}_core)
+
+soci_target_output_name(${SOCI_CORE_TARGET} SOCI_CORE_TARGET_OUTPUT_NAME)
+
 #
 # Core shared library
 #
@@ -54,8 +62,10 @@ if (SOCI_SHARED)
   endif()
 endif()
 
+# This adds definitions to all build configurations. SOCI_DEBUG_POSTFIX is passed to soci library
 add_definitions(-DSOCI_LIB_PREFIX="${CMAKE_SHARED_LIBRARY_PREFIX}soci_"
-                -DSOCI_LIB_SUFFIX="${CMAKE_SHARED_LIBRARY_SUFFIX}")
+                -DSOCI_LIB_SUFFIX="${CMAKE_SHARED_LIBRARY_SUFFIX}"
+                -DSOCI_DEBUG_POSTFIX="${CMAKE_DEBUG_POSTFIX}")
 
 #
 # Core static library

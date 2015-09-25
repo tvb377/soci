@@ -8,7 +8,7 @@
 #ifndef SOCI_CONNECTION_PARAMETERS_H_INCLUDED
 #define SOCI_CONNECTION_PARAMETERS_H_INCLUDED
 
-#include "soci/soci-config.h"
+#include "soci/soci-platform.h"
 
 #include <map>
 #include <string>
@@ -59,7 +59,7 @@ private:
     std::string connectString_;
 
     // We store all the values as strings for simplicity.
-    typedef std::map<const char*, std::string> Options;
+    typedef std::map<std::string, std::string> Options;
     Options options_;
 };
 

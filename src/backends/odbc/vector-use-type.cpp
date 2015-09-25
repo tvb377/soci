@@ -6,8 +6,8 @@
 //
 
 #define SOCI_ODBC_SOURCE
-#include "soci/odbc/soci-odbc.h"
 #include "soci/soci-platform.h"
+#include "soci/odbc/soci-odbc.h"
 #include "soci-static-assert.h"
 #include <cctype>
 #include <cstdio>
@@ -215,9 +215,9 @@ void odbc_vector_use_type_backend::bind_helper(int &position, void *data, exchan
     data_ = data; // for future reference
     type_ = type; // for future reference
 
-    SQLSMALLINT sqlType;
-    SQLSMALLINT cType;
-    SQLUINTEGER size;
+    SQLSMALLINT sqlType(0);
+    SQLSMALLINT cType(0);
+    SQLUINTEGER size(0);
 
     prepare_for_bind(data, size, sqlType, cType);
 
@@ -230,8 +230,9 @@ void odbc_vector_use_type_backend::bind_helper(int &position, void *data, exchan
 
     if (is_odbc_error(rc))
     {
-        throw odbc_soci_error(SQL_HANDLE_STMT, statement_.hstmt_,
-            "Error while binding value to column");
+        std::ostringstream ss;
+        ss << "binding input vector parameter #" << position;
+        throw odbc_soci_error(SQL_HANDLE_STMT, statement_.hstmt_, ss.str());
     }
 }
 

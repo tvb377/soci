@@ -16,12 +16,6 @@
 namespace soci
 {
 
-// tmp is uninitialized
-#if defined(__GNUC__) && (__GNUC__ == 4) && (__GNUC_MINOR__ > 6)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
-#endif
-
 // simple fall-back for boost::optional
 template <typename T>
 struct type_conversion<boost::optional<T> >
@@ -37,7 +31,7 @@ struct type_conversion<boost::optional<T> >
         }
         else
         {
-            T tmp;
+            T tmp = T();
             type_conversion<T>::from_base(in, ind, tmp);
             out = tmp;
         }
@@ -58,9 +52,5 @@ struct type_conversion<boost::optional<T> >
 };
 
 } // namespace soci
-
-#if defined(__GNUC__) && (__GNUC__ == 4) && (__GNUC_MINOR__ > 6)
-#pragma GCC diagnostic pop
-#endif
 
 #endif // SOCI_BOOST_OPTIONAL_H_INCLUDED

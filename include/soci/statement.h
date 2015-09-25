@@ -54,7 +54,9 @@ public:
     void exchange(use_container<T, Indicator> const &uc)
     { uses_.exchange(uc); }
 
+
     void clean_up();
+    void bind_clean_up();
 
     void prepare(std::string const & query,
                     statement_type eType = st_repeatable_query);
@@ -158,10 +160,7 @@ private:
 
     soci::details::statement_backend * backEnd_;
 
-    // The type is noncopyable.
-    statement_impl(statement_impl const &);
-    statement_impl& operator=(statement_impl const &);
-
+    SOCI_NOT_COPYABLE(statement_impl)
 };
 
 } // namespace details
@@ -200,6 +199,7 @@ public:
     template <typename T, typename Indicator>
     void exchange(details::use_container<T, Indicator>  const &uc) { impl_->exchange(uc); }
     void clean_up()                      { impl_->clean_up(); }
+    void bind_clean_up()                 { impl_->bind_clean_up(); }
 
     void prepare(std::string const & query,
         details::statement_type eType = details::st_repeatable_query)

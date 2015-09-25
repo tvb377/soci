@@ -16,12 +16,6 @@
 using namespace soci;
 using namespace soci::details;
 
-#ifdef _MSC_VER
-#pragma warning(disable:4996)
-#define snprintf _snprintf
-#endif
-
-
 void* odbc_standard_use_type_backend::prepare_for_bind(
     SQLLEN &size, SQLSMALLINT &sqlType, SQLSMALLINT &cType)
 {
@@ -99,6 +93,15 @@ void* odbc_standard_use_type_backend::prepare_for_bind(
         memcpy(buf_, s.c_str(), size);
         buf_[size++] = '\0';
         indHolder_ = SQL_NTS;
+
+        // Strings of greater length are silently truncated at 8000 limit by MS
+        // SQL unless SQL_SS_LENGTH_UNLIMITED (which is defined as 0, but not
+        // available in all headers) is used.
+        if (size > 8000)
+        {
+          sqlType = SQL_LONGVARCHAR;
+          size = 0 /* SQL_SS_LENGTH_UNLIMITED */;
+        }
     }
     break;
     case x_stdtm:
@@ -206,9 +209,9 @@ void odbc_standard_use_type_backend::bind_by_name(
 void odbc_standard_use_type_backend::pre_use(indicator const *ind)
 {
     // first deal with data
-    SQLSMALLINT sqlType;
-    SQLSMALLINT cType;
-    SQLLEN size;
+    SQLSMALLINT sqlType(0);
+    SQLSMALLINT cType(0);
+    SQLLEN size(0);
 
     void* const sqlData = prepare_for_bind(size, sqlType, cType);
 
@@ -220,8 +223,9 @@ void odbc_standard_use_type_backend::pre_use(indicator const *ind)
 
     if (is_odbc_error(rc))
     {
-        throw odbc_soci_error(SQL_HANDLE_STMT, statement_.hstmt_,
-                                "Binding");
+        std::ostringstream ss;
+        ss << "binding input parameter #" << position_;
+        throw odbc_soci_error(SQL_HANDLE_STMT, statement_.hstmt_, ss.str());
     }
 
     // then handle indicators

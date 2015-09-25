@@ -69,7 +69,7 @@ TEST_CASE("Firebird char types", "[firebird][string]")
     catch (soci_error const &)
     {} // ignore if error
 
-    sql << "create table test2 (p1 char(10), p2 varchar(10))";
+    sql << "create table test2 (p1 char(10) character set none, p2 varchar(10) character set none)";
     sql.commit();
 
     sql.begin();
@@ -144,6 +144,7 @@ TEST_CASE("Firebird char types", "[firebird][string]")
         std::strcpy(buf, buf_str.c_str());
 
         CHECK(std::strncmp(buf, msg, 5) == 0);
+        // This test works only for charset none
         CHECK(std::strncmp(buf+5, "     ", 5) == 0);
 
         sql << "delete from test2";
@@ -172,7 +173,6 @@ TEST_CASE("Firebird date and time", "[firebird][datetime]")
     std::tm t1, t2, t3;
     std::time_t now = std::time(NULL);
     std::tm t = *std::localtime(&now);
-
     sql << "insert into test3(p1, p2, p3) "
     << "values (?,?,?)", use(t), use(t), use(t);
 
@@ -361,7 +361,7 @@ TEST_CASE("Firebird bulk operations", "[firebird][bulk]")
     catch (soci_error const &)
     {} // ignore if error
 
-    sql << "create table test6 (p1 char(10), p2 varchar(10))";
+    sql << "create table test6 (p1 char(10) character set none, p2 varchar(10) character set none)";
     sql.commit();
 
     sql.begin();
@@ -970,7 +970,7 @@ namespace soci
             char count_type = *ptr++;
             int m = isc_vax_integer(ptr, 2);
             ptr += 2;
-            count = isc_vax_integer(ptr, m);
+            count = isc_vax_integer(ptr, static_cast<short>(m));
 
             if (count_type == type_)
             {

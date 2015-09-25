@@ -34,8 +34,12 @@ macro(soci_backend_deps_found NAME DEPS SUCCESS)
       list(APPEND DEPS_NOT_FOUND ${dep})
     else()
       string(TOUPPER "${dep}" DEPU)
-      list(APPEND DEPS_INCLUDE_DIRS ${${DEPU}_INCLUDE_DIR})
-      list(APPEND DEPS_INCLUDE_DIRS ${${DEPU}_INCLUDE_DIRS})
+      if( ${DEPU}_INCLUDE_DIR )
+        list(APPEND DEPS_INCLUDE_DIRS ${${DEPU}_INCLUDE_DIR})
+      endif()
+      if( ${DEPU}_INCLUDE_DIRS )
+        list(APPEND DEPS_INCLUDE_DIRS ${${DEPU}_INCLUDE_DIRS})
+      endif()
       list(APPEND DEPS_LIBRARIES ${${DEPU}_LIBRARIES})
       list(APPEND DEPS_LIBRARY_DIRS ${${DEPU}_LIBRARY_DIR})
       list(APPEND DEPS_LIBRARY_DIRS ${${DEPU}_LIBRARY_DIRS})
@@ -222,7 +226,7 @@ macro(soci_backend NAME)
          ARCHIVE DESTINATION ${LIBDIR})
       endif()
 
-      if (SOCI_SHARED)
+      if (SOCI_STATIC)
         install(TARGETS ${THIS_BACKEND_TARGET_STATIC}
          RUNTIME DESTINATION ${BINDIR}
          LIBRARY DESTINATION ${LIBDIR}
@@ -336,23 +340,33 @@ macro(soci_backend_test)
     endif()
     boost_report_value(${TEST_CONNSTR_VAR})
 
+<<<<<<< HEAD
     # required for automatic linking of static libraries
     link_directories(${SOCI_CORE_DEPS_LIBRARY_DIRS} ${THIS_TEST_DEPENDS_LIBRARY_DIRS})
 
     # Shared libraries test
     add_executable(${TEST_TARGET} ${THIS_TEST_SOURCE})
+=======
+    if( SOCI_SHARED )
+      # Shared libraries test
+      add_executable(${TEST_TARGET} ${THIS_TEST_SOURCE})
+>>>>>>> SOCI/master
 
-    target_link_libraries(${TEST_TARGET}
-      ${SOCI_CORE_DEPS_LIBS}
-      ${THIS_TEST_DEPENDS_LIBRARIES}
-      soci_core
-      soci_${BACKENDL})
+      target_link_libraries(${TEST_TARGET}
+        ${SOCI_CORE_DEPS_LIBS}
+        ${THIS_TEST_DEPENDS_LIBRARIES}
+        soci_core
+        soci_${BACKENDL})
 
-    add_test(${TEST_TARGET}
-      ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${TEST_TARGET}
-      ${${TEST_CONNSTR_VAR}})
+      add_test(${TEST_TARGET}
+        ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${TEST_TARGET}
+        ${${TEST_CONNSTR_VAR}})
 
-    soci_backend_test_create_vcxproj_user(${TEST_TARGET} "\"${${TEST_CONNSTR_VAR}}\"")
+      soci_backend_test_create_vcxproj_user(${TEST_TARGET} "\"${${TEST_CONNSTR_VAR}}\"")
+
+      # Ask make check to try to build tests first before executing them
+      add_dependencies(check ${TEST_TARGET})
+    endif(SOCI_SHARED)
 
     # Static libraries test
     if(SOCI_STATIC)
@@ -371,10 +385,12 @@ macro(soci_backend_test)
         ${${TEST_CONNSTR_VAR}})
 
       soci_backend_test_create_vcxproj_user(${TEST_TARGET_STATIC} "\"${${TEST_CONNSTR_VAR}}\"")
+
+      # Ask make check to try to build tests first before executing them
+      add_dependencies(check ${TEST_TARGET_STATIC})
     endif(SOCI_STATIC)
 
-    # Ask make check to try to build tests first before executing them
-    add_dependencies(check ${TEST_TARGET} ${TEST_TARGET_STATIC})
+
 
     # Group source files for IDE source explorers (e.g. Visual Studio)
     source_group("Source Files" FILES ${THIS_TEST_SOURCE})

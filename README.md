@@ -1,6 +1,15 @@
 SOCI - The C++ Database Access Library
 ======================================
 
+Branches        | Travis-CI      | AppVeyor-CI |
+----------------|--------------- |-----------
+master          | [![Build Status](https://travis-ci.org/SOCI/soci.svg?branch=master)](https://travis-ci.org/SOCI/soci)         | [![Build status](https://ci.appveyor.com/api/projects/status/ree3vx3kfgs23qk6/branch/master?svg=true)](https://ci.appveyor.com/project/mloskot/soci/branch/master)
+release/3.2     | [![Build Status](https://travis-ci.org/SOCI/soci.svg?branch=release%2F3.2)](https://travis-ci.org/SOCI/soci)  |
+---------------------------------------------
+
+
+
+
 Website: http://soci.sourceforge.net
 
 GitHub hosts SOCI source code repository, issues tracker and wiki:
@@ -8,10 +17,6 @@ https://github.com/SOCI
 
 Downloads and mailing lists at
 http://sourceforge.net/projects/soci/
-
-Travis CI service at https://travis-ci.org/SOCI/soci
-
-[![Build Status](https://api.travis-ci.org/SOCI/soci.png)](https://travis-ci.org/SOCI/soci)
 
 License
 -------
